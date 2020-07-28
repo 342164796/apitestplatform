@@ -1,0 +1,48 @@
+{% extends "../../base.html" %}
+
+{% block body %}
+
+<div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+            <span class="layui-breadcrumb">
+                <a href="">首页</a>
+                <a class="this" href="">API监控</a>
+                <a class="this-page" href="">监控管理</a>
+                <a><cite>编辑</cite></a>
+            </span>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-md8 layui-col-md-offset1">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend>编辑项目</legend>
+                </fieldset>
+                <form class="layui-form" action="/base/mon_update/" method="post">
+                <input name="monprj_id" value ={{prj.monprj_id }} hidden>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">项目名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="monprj_name" lay-verify="title" autocomplete="off" value ={{prj.monprj_name }}  class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">监控频率(ms)</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="interview_time" lay-verify="title" autocomplete="off" value ={{prj.interview_time }}  class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="demo1">保存</button>
+<!--                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock%}

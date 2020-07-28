@@ -1,0 +1,55 @@
+{% extends "../../base.html" %}
+
+{% block crumbs %}
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/yqjr/index">主页</a>
+                </li>
+                <li class="active">
+                    <a class="this">API监控</a>
+                </li>
+                <li class="active">
+                    <a class="this-page">报警通知</a>
+                </li>
+            </ol>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>钉钉回调地址</th>
+                            <th>报警消息静默期(S)</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for msg in msgcfg_list %}
+                            <tr>
+                                <td>{{ msg.ding }}</td>
+                                <td>{{ msg.jingmoqi }}</td>
+                                <td>
+                                    <a href="/base/msgcfg_update?id={{ msg.id }}" class="layui-btn layui-btn-xs"
+                                       lay-event="edit">编辑</a>
+<!--                                    <a href="/base/mon_delete?monprj_id={{ prj.monprj_id }}"-->
+<!--                                       class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" onclick="return confirm('确认要删除吗？')">删除</a>-->
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

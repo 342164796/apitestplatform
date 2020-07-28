@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block crumbs %}
+<div class="row">
+<!--    <div class="col-md-12">-->
+<!--        <ol class="breadcrumb">-->
+<!--            <li>-->
+<!--                <a href="/base/plan/">主页</a>-->
+<!--            </li>-->
+<!--            <li class="active">-->
+<!--                <a class="this">基础信息</a>-->
+<!--            </li>-->
+<!--            <li class="active">-->
+<!--                <a class="this-page">测试计划管理</a>-->
+<!--            </li>-->
+<!--            <li class="active">-->
+<!--                <a class="this-page">测试报告</a>-->
+<!--            </li>-->
+<!--        </ol>-->
+
+<!--    </div>-->
+</div>
+{% endblock %}
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel-body">
+<!--            <table class="table table-bordered">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th>ID</th>-->
+<!--                    <th>NAME</th>-->
+<!--                    <th>TOTAL</th>-->
+<!--                    <th>PASS</th>-->
+<!--                    <th>FAIL</th>-->
+<!--                    <th>ERROR</th>-->
+<!--                    <th>操作</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                {% for result in report_list %}-->
+<!--                <tr>-->
+<!--                    <td>{{ result.report_id }}</td>-->
+<!--                    <td>{{ result.report_name }}</td>-->
+<!--                    <td>{{ result.case_num }}</td>-->
+<!--                    <td>{{ result.pass_num }}</td>-->
+<!--                    <td>{{ result.fail_num }}</td>-->
+<!--                    <td>{{ result.error_num }}</td>-->
+<!--                    <td>-->
+<!--                        <a href="/base/report_detail?report_id= {{ result.report_id }}" class="layui-btn layui-btn-xs" lay-event="edit">查看</a>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                {% endfor %}-->
+<!--                </tbody>-->
+<!--            </table>-->
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "../../base.html" %}
+
+{% block crumbs %}
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/yqjr/index">主页</a>
+                </li>
+                <li class="active">
+                    <a class="this">API监控</a>
+                </li>
+                <li class="active">
+                    <a class="this-page">API监控</a>
+                </li>
+            </ol>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-heading">
+                   <a href="/base/monapi_add/" class="btn btn-primary">添加监控</a>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>监控名称</th>
+                            <th>响应时间(ms)</th>
+                            <th>监控状态</th>
+                            <th>详细信息</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for mon in monapi_list %}
+                            <tr>
+                                <td>{{ mon.id }}</td>
+                                <td>{{ mon.name }}</td>
+                                {% if mon.time == None %}
+                                    <td>暂无数据</td>
+                                {% else %}
+                                    <td>{{ mon.time }}</td>
+                                {% endif %}
+                                {% if mon.status == 1 %}
+                                <td><font color="#00FF7F">正常</font></td>
+                                {% elif mon.status == 0 %}
+                                <td><font color="#FF0000">异常</font></td>
+                                {% else %}
+                                    <td>暂无数据</td>
+                                {% endif %}
+                                <td>{{ mon.details }}</td>
+                                <td>
+                                    <a href="/base/monapi_update?id={{ mon.id }}" class="layui-btn layui-btn-xs"
+                                       lay-event="edit">编辑</a>
+                                    <a href="/base/monapi_delete?id={{ mon.id }}"
+                                       class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" onclick="return confirm('确认要删除吗？')">删除</a>
+                                    <a href="/base/monapi_run?id={{ mon.id }}" class="layui-btn layui-btn-xs"
+                                       lay-event="edit">运行</a>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

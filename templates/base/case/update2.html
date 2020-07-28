@@ -1,0 +1,436 @@
+ {% extends "../../base.html" %}
+
+{% block crumbs %}
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li>
+                <a href="/yqjr/index">主页</a>
+            </li>
+            <li class="active">
+                <a class="this">基础信息</a>
+            </li>
+            <li class="active">
+                <a class="this-page">用例管理</a>
+            </li>
+            <li class="active">
+                <a class="">用例编辑</a>
+            </li>
+        </ol>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h3 class="panel-title">编辑用例</h3>
+            </div>
+            <div class="ibox-content">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">用例名称</label>
+                        <div class="col-sm-8">
+                            <input name="case_id" id="case_id" value={{ case.case_id }} hidden>
+                            <input type="text" id="case_name" class="form-control"value={{ case.case_name }}>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">所属项目</label>
+                        <div class="col-sm-8">
+                            <select id="prj_id" class="form-control" onchange=get_if()>
+                                <option value={{ case.project_id }}>{{ case.project }}</option>
+                                {% for prj in prj_list %}
+                                <option value={{ prj.prj_id }}>{{ prj.prj_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">用例描述</label>
+                        <div class="col-sm-8">
+                            <textarea id="description" placeholder="请输入内容" class="form-control" rows="3" >{{ case.description }}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">添加接口</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" id="if_id" name="if_id">
+                                <option value={{ case.if_id }}>{{ case.interface }}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4 ">
+                            <input name="c_id" id="c_id" value={{ case.case_id }} hidden>
+                            <button id="add_interface" class="btn btn-primary" type="button" >确定</button>
+                        </div>
+                    </div>
+                    <div id="case-list">
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-6">
+                            <button type="submit" id="submit" class="btn btn-primary">保存</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+    {% endblock %}
+    {% block javascript %}
+    <script>
+        $(function(){
+
+            get_if();
+
+        });
+        //删除本接口
+        function del_interface(obj) {
+            var div = $(obj).parent("div").parent().parent();
+            $(div).remove();
+        }
+
+        //删除行
+        function del_step(obj) {
+            var tr = obj.parentNode.parentNode;
+            var tbody = tr.parentNode;
+            tbody.removeChild(tr);
+        }
+
+
+        //添加头参数
+        function add_header_row(obj) {
+            var panel = $(obj).parent().parent();
+            var tbody = $(panel).find("table[name='header']").children('tbody');
+            var newRow = "<tr> <td>#</td><td name='var_name' contenteditable='true'></td><td name='var_value' contenteditable='true'></td> <td> <button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this)'><i class='fa fa-times'>删除行</i></button> </td> </tr>";
+            $(tbody).append(newRow);
+        }
+
+        //添加body参数
+        function add_body_row(obj) {
+            var panel = $(obj).parent().parent();
+            var tbody = $(panel).find("table[name='body']").children('tbody');
+            var newRow = "<tr> <td>#</td><td name='var_name' contenteditable='true'></td><td name='var_value' contenteditable='true'></td> <td> <button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this)'><i class='fa fa-times'>删除行</i></button> </td> </tr>";
+            $(tbody).append(newRow);
+        }
+
+        //添加提取参数
+        function add_extract_row(obj) {
+        var panel = $(obj).parent().parent();
+        var tbody = $(panel).find("table[name='extract']").children('tbody');
+        var newRow = "<tr> <td>#</td><td name='var_name' contenteditable='true'></td><td name='var_value' contenteditable='true'></td><td><button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this)'><i class='fa fa-times'>删除行</i></button> </td> </tr>";
+        $(tbody).append(newRow);
+    }
+
+
+        //添加检查点参数
+        function add_validators_row(obj) {
+            var panel = $(obj).parent().parent();
+            var tbody = $(panel).find("table[name='validators']").children('tbody');
+          //  var newRow = "<tr> <td>#</td><td name='var_name' contenteditable='true'></td><td name='var_value' contenteditable='true'></td> <td> <button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this)'><i class='fa fa-times'>删除行</i></button> </td> </tr>";
+            var newRow = "<tr> <td>#</td><td name='var_name' contenteditable='true'></td><td><select name='testmethod' id='testmethod'><option value='eq'>eq</option><option value='startswith'>startswith</option><option value='endswith'>endswith</option><option value='no equal'>no equal</option></select></td><td name='var_value' contenteditable='true'></td> <td> <button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this)'><i class='fa fa-times'>删除行</i></button> </td> </tr>";
+            $(tbody).append(newRow);
+        }
+
+
+        function get_if() {
+            $("#if_id").empty();
+            var prj_id = $("#prj_id").val();
+            if (prj_id == null) {
+                alert("请先选择项目");
+            }
+            else {
+                $.ajax({
+                    type: "get",
+                    url: "/base/findata/",
+                    data: {
+                        "prj_id": prj_id,
+                        "type": "get_all_if_by_prj_id"
+                    },
+                    success: function (data) {
+                        dataJson = eval(data);
+                        $.each(dataJson, function (i, item) {
+                            $("#if_id").append("<option value=" + item.if_id + ">" + item.if_name + "</option>");
+                        })
+                    },
+                    error: function () {
+                        alert("获取接口失败！");
+                    }
+                });
+            }
+            $("#add_interface").click();
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+           // $("#add_interface").click();
+            //添加接口
+            $("#add_interface").click(function () {
+                alert("ddd");
+                //function interface() {
+                    var if_id = $("#if_id").val();
+                    var case_id = $("#case_id").val();
+                    if (if_id == "") {
+                        alert("请先选择接口");
+                    }
+                    else {
+                        $.ajax({
+                            url: "/base/findata/",
+                            type: "get",
+                            data: {
+                                "case_id": case_id,
+                                "type": "get_case_by_case_id",
+                            },
+                            success: function (data) {
+                                var listdata = eval(data);
+                                $(listdata).each(function (i, item) {
+                                    var contents = item.content;
+                                    $.each(JSON.parse(contents), function (i, content) {
+                                        var header_table = "<table name='header' class='table'><thead><tr><th>#</th> <th>参数名</th>" +
+                                            "<th>值</th>" +
+                                            "<th></th> </tr> </thead><tbody>";
+                                        var headers = content.header;
+                                        //$.each(JSON.parse(content), function (i, item) {
+                                            //var headers = item.header;
+                                            //alert(headers)
+                                        var keys = [];
+                                        for(var key in headers){
+                                            keys.push(key);
+                                        }
+                                        for ( var i=0;i<keys.length;i++){
+                                            var tr = "<tr><td>#</td><td name='var_name'>" + keys[i] + "</td><td contenteditable='true' name='var_value'>" + headers[keys[i]] + "</td><td><button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this);'>&nbsp;删除行 </button> </td></tr>";
+                                            header_table = header_table + tr;
+                                        }
+
+                                        //});
+                                        var header = header_table + "</tbody></table>";
+                                        var body_table = "<table name='body' class='table'><thead><tr><th>#</th> <th>参数名</th>" +
+                                            "<th>值</th>" +
+                                            "<th></th> </tr> </thead><tbody>";
+
+
+                                        //$.each(JSON.parse(content), function (i, item) {
+                                        if_id = content.if_id;
+                                        //alert(if_name);
+                                        if_name = content.if_name;
+                                        extracts = content.extract;
+                                        validators = content.validators;
+                                        var bodys = content.body;
+                                        var keys = [];
+                                        for(var key in bodys){
+                                            keys.push(key);
+                                        }
+                                        for ( var i=0;i<keys.length;i++){
+                                            var tr = "<tr><td>#</td><td name='var_name'>" + keys[i] + "</td><td contenteditable='true' name='var_value'>" + JSON.stringify(bodys[keys[i]]) + "</td><td><button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this);'>&nbsp;删除行 </button> </td></tr>";
+                                            body_table = body_table + tr
+                                        }
+                                        //});
+                                        var body = body_table + "</tbody></table>";
+
+                                        var extract_table = "";
+                                        //var extract_keys = [];
+                                        //if(typeof extracts != "undefined"){
+                                         //   for (var key in extracts){
+                                          //      extract_keys.push(key);
+                                        //    }
+                                       for (var key in extracts){
+                                           var item = extracts[key];
+                                           // alert(item);
+                                           var tr = "<tr><td>#</td><td name='var_name' contenteditable='true'>" + key + "</td><td contenteditable='true' name='var_value'>" + item + "</td><td><button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this)'><i class='fa fa-times'>删除行</i></button> </td> </tr>";
+                                           extract_table = extract_table + tr;
+                                       }
+                                       // for ( var i=0;i<extract_keys.length;i++){
+                                           // var tr = "<tr> <td>#</td><td name='var_name' contenteditable='true'>" + extract_keys[i] + "</td><td> <button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this)'><i class='fa fa-times'>删除行</i></button> </td> </tr>";
+                                            //extract_table = extract_table + tr;
+                                        //}
+                                        if(typeof validators != "undefined"){
+                                            var validators_table = "";
+                                            $.each(validators, function (i, item){
+                                                var check = item.check;
+                                                var expect = item.expect;
+                                                var comparator = item.comparator;
+                                                var tr = "<tr> <td>#</td><td name='var_name' contenteditable='true'>" + check + "</td><td><select name='testmethod' id='testmethod'><option value=" + comparator + " >" + comparator + "</option><option value='eq'>eq</option><option value='startswith'>startswith</option><option value='endswith'>endswith</option><option value='no equal'>no equal</option></select></td><td name='var_value' contenteditable='true'>" + expect + "</td> <td> <button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this)'><i class='fa fa-times'>删除行</i></button> </td> </tr>";
+                                              //  var tr = "<tr> <td>#</td><td name='var_name' contenteditable='true'>" + check + "</td><td name='var_value' contenteditable='true'>" + expect + "</td> <td> <button class='btn btn-xs btn-outline btn-danger' type='button' onclick='del_step(this)'><i class='fa fa-times'>删除行</i></button> </td> </tr>";
+                                                validators_table = validators_table + tr;
+                                            });
+                                        }
+
+                                        if(typeof if_id == "undefined"){
+                                            if_id="";
+                                        }
+                                        if(typeof if_name =="undefined"){
+                                            if_name="";
+                                        }
+
+                                        var newtable = "<div class='row'><div class='col-sm-offset-1 col-sm-9'> <div class='panel'>" +
+                                            "<div id= '" + if_id + "' class='panel-heading'>" +
+                                            "<h3 class='panel-title'>" + if_name + "</h3>" +
+                                            "<div class='right'><button type=\"button\" class='btn-toggle-collapse'><i class='lnr lnr-chevron-up'></i></button></div>" +
+                                            "</div>" +
+                                            "<div class='panel-body'>" +
+                                            "<button onclick='add_header_row(this)' class='btn btn-primary'>添加header参数</button>" +
+                                            "<button onclick='add_body_row(this)' class='btn btn-primary'>添加body参数</button> " +
+                                            "<button onclick='add_extract_row(this)' class='btn btn-primary'>添加提取参数</button> " +
+                                            "<button onclick='add_validators_row(this)' class='btn btn-primary'>添加检查点</button> " +
+                                            "<button onclick='del_interface(this)' class='btn btn-primary'>删除本接口</button></div> " +
+                                            "<p>header参数</p>" +
+                                            header +
+                                            "<p>body参数</p>" +
+                                            body +
+                                            "<p>提取参数</p> " +
+                                            "<table name='extract' class='table'>" +
+                                            "<thead>" +
+                                            "<tr> <th>#</th>" +
+                                            "<th>参数名</th>" +
+                                            "<th>取值路径</th>" +
+                                            "</tr> " +
+                                            "</thead>" +
+                                            "<tbody> " +
+                                            extract_table +
+                                            "</tbody> " +
+                                            "</table> " +
+                                            "<p>检查点</p> " +
+                                            "<table name='validators' class='table'>" +
+                                            "<thead>" +
+                                            "<tr>" +
+                                            "<th>#</th>" +
+                                            "<th>参数名</th>" +
+                                            "<th>校验方式</th>" +
+                                            "<th>期望值</th>" +
+                                            "</tr>" +
+                                            "</thead>" +
+                                            "<tbody>" +
+                                            validators_table +
+                                            "</tbody>" +
+                                            "</table>" +
+                                            "</div> </div></div>"
+                                        $("#case-list").append(newtable);
+                                    });
+
+                                });
+
+                            },
+                            error: function () {
+                                alert("error!");
+                            }
+                        });
+                    }
+
+                });
+            $("#submit").click(function () {
+            var case_id = $("#case_id").val();
+            var case_name = $("#case_name").val();
+            var prj_id = $("#prj_id").val();
+            var description = $("#description").val();
+
+            var content = [];
+            $("div[class='panel']").each(function(i){
+
+                var step = {};
+
+                var if_id = $(this).find("div[class='panel-heading']").attr("id");
+                var if_name = $(this).find("div[class='panel-heading']").text();
+                var header_table = $(this).find("table[name='header']");
+                var header = {};
+                $(header_table).find("tr").each(function (i) {
+                    if (i == 0) return true;
+                    var name = $(this).find("td[name='var_name']").text();
+                    if(name == ""){
+                        return true;
+                    }
+                    var value = $(this).find("td[name='var_value']").text();
+                    header[name] = value;
+                });
+
+                var body_table = $(this).find("table[name='body']");
+                var body = {};
+                $(body_table).find("tr").each(function (i) {
+                    if (i == 0) return true;
+                    var name = $(this).find("td[name='var_name']").text();
+                    if(name == ""){
+                        return true;
+                    }
+                    var value = $(this).find("td[name='var_value']").text();
+                    //alert(JSON.parse(value));
+                    try {
+                        body[name] = JSON.parse(value);
+                    }
+                    catch(err) {
+                        alert(value);
+                        body[name] = value;
+                    }
+                  //  body[name] = value;
+                  //  alert(body);
+                });
+
+                var extract_table = $(this).find("table[name='extract']");
+                var extract = {};
+                $(extract_table).find("tr").each(function (i) {
+                    if (i == 0) return true;
+                    var name = $(this).find("td[name='var_name']").text();
+                    var value = $(this).find("td[name='var_value']").text();
+                    extract[name] = value;
+                });
+
+                var validators_table = $(this).find("table[name='validators']");
+                var validators = [];
+                $(validators_table).find("tr").each(function (i) {
+                    if (i == 0) return true;
+                    var vl = {};
+                    var name = $(this).find("td[name='var_name']").text();
+                    if(name == ""){
+                        alert(name);
+                        return true;
+                    }
+                    var value = $(this).find("td[name='var_value']").text();
+                    var testmethod = $(this).find("td select option:selected").val();
+                    vl["check"] = name;
+                    vl["comparator"] = testmethod;
+                    vl["expect"] = value;
+                    validators.push(vl);
+                });
+
+                step["if_id"] = if_id;
+                step["if_name"] = if_name;
+                step["header"] = header;
+                step["body"] = body;
+                step["extract"] = extract;
+                step["validators"] = validators;
+
+                content.push(step);
+            });
+            var content_json = JSON.stringify(content);
+
+            $.ajax({
+                url: "/base/case_update/",
+                type: "post",
+                data: {
+                    "case_id": case_id,
+                    "case_name": case_name,
+                    "prj_id": prj_id,
+                    "description": description,
+                    "content": content_json
+                },
+                // dataType: "json",
+                success: function () {
+                    alert("保存成功");
+                    window.location.replace("/base/case/");
+                },
+                error: function () {
+                    alert("error!");
+                }
+            });
+
+
+        });
+
+        });
+
+    </script>
+    {% endblock %}
