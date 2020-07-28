@@ -90,10 +90,10 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': "172.18.128.192",
+        'HOST': "*.*.*.*",
         'NAME': "apitestplatform",
-        'USER': "root",
-        'PASSWORD': "123123",
+        'USER': "user",
+        'PASSWORD': "password",
         'PORT': "3306",
         # 'CHARSET': 'utf8',
         # 'COLLATION': 'utf8_general_ci',
